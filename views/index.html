@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring - Beta</title>
+    <link rel="icon" type="image/x-icon" href="/public/icon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+</head>
+<style>
+    body{
+        background-color: black;
+        color: white;
+    }
+    .main-content{
+        border: white solid 1px;
+    }
+</style>
+<body>
+    <div class="m-3">
+        <h3>List device connected..</h3>
+        <div class="row col-md-12" id="listDevices">
+            <h6>No device connected for now.. waiting device send any data..</h6>
+        </div>
+    </div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<script>
+    const socket = io();
+    socket.on("data", (data) => {
+        let listDevices = document.getElementById(`listDevices`)
+
+        let elementDevice = document.getElementById(`container-${data.device}`)
+        
+        if (elementDevice) {
+            elementDevice.innerHTML = `
+            <div class="col-md-12 p-1 rounded main-content"><div class="m-1" id="container-${data.device}">
+                <div> <h6>Device : ${data.device}</h6></div>
+                Suhu : <span id="suhu-${data.device}">${data.suhu} °C</span>
+                <div class="progress">
+                    <div class="progress-bar bg-${getColor(data.suhu)}" role="progressbar" style="width: ${data.suhu}%" aria-valuenow="${data.suhu}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                Value A : <span id="valueA-${data.device}">${data.valueA} satuan A</span>
+                <div class="progress">
+                    <div class="progress-bar bg-${getColor(data.valueA)}" role="progressbar" style="width: ${data.valueA}%" aria-valuenow="${data.valueA}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                Value B : <span id="valueN-${data.device}">${data.valueN} satuan N</span>
+                <div class="progress">
+                    <div class="progress-bar bg-${getColor(data.valueN)}" role="progressbar" style="width: ${data.valueN}%" aria-valuenow="${data.valueN}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>`
+        
+        } else {
+            if (listDevices.innerHTML.includes('No device connected')) {
+                listDevices.innerHTML = ""
+            }
+            
+            listDevices.innerHTML += `
+            <div class="col-md-6 p-1 rounded"><div class="m-1" id="container-${data.device}">
+                <div class="col-md-12 p-1 rounded  main-content"><div class="m-1" id="container-${data.device}">
+                    <div> <h6>Device : ${data.device}</h6></div>
+                    Suhu : <span id="suhu-${data.device}">${data.suhu} °C</span>
+                    <div class="progress">
+                        <div class="progress-bar bg-${getColor(data.suhu)}" role="progressbar" style="width: ${data.suhu}%" aria-valuenow="${data.suhu}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    Value A : <span id="valueA-${data.device}">${data.valueA} satuan A</span>
+                    <div class="progress">
+                        <div class="progress-bar bg-${getColor(data.valueA)}" role="progressbar" style="width: ${data.valueA}%" aria-valuenow="${data.valueA}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    Value B : <span id="valueN-${data.device}">${data.valueN} satuan N</span>
+                    <div class="progress">
+                        <div class="progress-bar bg-${getColor(data.valueN)}" role="progressbar" style="width: ${data.valueN}%" aria-valuenow="${data.valueN}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>`
+        }
+        
+    })
+
+    function getColor(color){
+        if (color < 40) {
+            return 'success'
+        }
+        if (color < 60) {
+            return 'warning'
+        }
+        if (color >= 60) {
+            return 'danger'
+        }
+    }
+</script>
+</html>
