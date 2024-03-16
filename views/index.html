@@ -34,7 +34,7 @@
 
         let elementDevice = document.getElementById(`container-${data.device}`)
         let d = new Date();
-        let datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes();
+        let datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes()+ ":" + d.getSeconds();
         if (elementDevice) {
             elementDevice.innerHTML = `
             <div class="col-md-12 p-1 rounded main-content"><div class="m-1" id="container-${data.device}">
