@@ -39,7 +39,7 @@
             elementDevice.innerHTML = `
             <div class="col-md-12 p-1 rounded main-content"><div class="m-1" id="container-${data.device}">
                 <div> <h6>Device : ${data.device}</h6></div>
-                <div>Last update : ${datestring}</div>
+                <div><em>Last update : ${datestring}</em><br></div>
                 Suhu : <span id="suhu-${data.device}">${data.suhu} °C</span>
                 <div class="progress">
                     <div class="progress-bar bg-${getColor(data.suhu)}" role="progressbar" style="width: ${data.suhu}%" aria-valuenow="${data.suhu}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -63,7 +63,7 @@
             <div class="col-md-6 p-1 rounded"><div class="m-1" id="container-${data.device}">
                 <div class="col-md-12 p-1 rounded  main-content"><div class="m-1" id="container-${data.device}">
                     <div> <h6>Device : ${data.device}</h6></div>
-                    <div>Last update : ${datestring}</div>
+                    <div><em>Last update : ${datestring}</em><br></div>
                     Suhu : <span id="suhu-${data.device}">${data.suhu} °C</span>
                     <div class="progress">
                         <div class="progress-bar bg-${getColor(data.suhu)}" role="progressbar" style="width: ${data.suhu}%" aria-valuenow="${data.suhu}" aria-valuemin="0" aria-valuemax="100"></div>
