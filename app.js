@@ -35,7 +35,7 @@ app.get("/receiveData", (req, res) => {
 
     try {
         let result = {
-            "device": req.query.device,
+            "perusahaan": req.query.perusahaan,
             // "suhu": req.query.suhu,
             // "valueA": req.query.valueA,
             // "valueN": req.query.valueN
