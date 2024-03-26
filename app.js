@@ -3,56 +3,72 @@ const {ReadlineParser} = require("@serialport/parser-readline");
 const {Server, Socket} = require("socket.io");
 const http = require("http");
 const express = require("express");
+const mysql = require("mysql")
+
+// Connection To Database
+const db = mysql.createConnection({
+    host : "yourhost",
+    database: "yourdb",
+    user : "youruser",
+    password : "yourpass" ,
+
+})
 
 const app = express();
 const server = http.createServer(app)
 const io = new Server(server);
 
-app.use(express.json())
+db.connect((err) => {
+    if (err) throw err
+    console.log("database connected...");
 
-app.use("/public", express.static('public'));
+    app.use(express.json())
 
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/views/index.html")
-})
+    app.use("/public", express.static('public'));
 
-app.get("/getData", (req, res) => {
-    let result = {
-        "device": "deviceA",
-        "suhu": Math.floor(Math.random() * (100 - 0 + 1) + 0)
-    }
+    app.get("/", (req, res) => {
+        res.sendFile(__dirname + "/views/index.html")
+    })
 
-    let result2 = {
-        "device": "deviceB",
-        "suhu": Math.floor(Math.random() * (100 - 0 + 1) + 0)
-    }
-    res.status(200).json(result)
-    io.emit("data", result)
-    io.emit("data", result2)
-})
+    app.get("/receiveData", (req, res) => {
 
-app.get("/receiveData", (req, res) => {
-
-    try {
-        let result = {
-            "perusahaan": req.query.perusahaan,
-            // "suhu": req.query.suhu,
-            // "valueA": req.query.valueA,
-            // "valueN": req.query.valueN
-            "suhu": Math.floor(Math.random() * (100 - 0 + 1) + 0),
-            "valueA": Math.floor(Math.random() * (100 - 0 + 1) + 0),
-            "valueN": Math.floor(Math.random() * (100 - 0 + 1) + 0)
+        try {
+            let result = {
+                "perusahaan": req.query.perusahaan,
+                "suhu": Math.floor(Math.random() * (100 - 0 + 1) + 0),
+                "valueA": Math.floor(Math.random() * (100 - 0 + 1) + 0),
+                "valueN": Math.floor(Math.random() * (100 - 0 + 1) + 0)
+            }
+            
+            res.status(200).json({"message": "Data received"})
+        
+            io.emit("data", result)
+            
+        } catch (error) {
+            res.status(200).json({"status": 401, "message": "Unauthtorized"})
         }
-        
-        res.status(200).json({"message": "Data received"})
-    
-        io.emit("data", result)
-        
-    } catch (error) {
-        res.status(200).json({"status": 401, "message": "Unauthtorized"})
-    }
 
-})
+    })
+
+    // Route Handling & Get Data
+    // app.get("/", (req, res) => {
+    //     // Get Data From Database
+    //     const sql = "SELECT * FROM user";
+    //     db.query(sql, (err, result) => {
+    //         const users = JSON.parse(JSON.stringify(result));
+    //         res.render("index", { users:users, titleDocument : "CRUD NODE.JS", titleTable : "DATA SISWA" })
+    //     });
+    // });
+
+    // // Inser Data
+    // app.post("/tambah", (req, res,) => {
+    //     const insertSql = `INSERT INTO user (nama, kelas) VALUES('${req.body.nama}', '${req.body.kelas}');`;
+    //     db.query(insertSql, (err, result) => {
+    //         if (err) throw err
+    //         res.redirect("/");
+    //     })
+    // });
+});
 
 io.on("connection", (socket) => {
     console.log("connected..")
